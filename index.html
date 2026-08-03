@@ -141,32 +141,6 @@
       height: 28px;
       flex: 0 0 28px;
     }
-    .sun-doodle {
-      position: absolute;
-      inset: -2px;
-      width: 32px;
-      height: 32px;
-      color: var(--ink-mid);
-      opacity: 0;
-      pointer-events: none;
-      z-index: 2;
-    }
-    .sun-doodle.is-drawing { opacity: 1; }
-    .sun-doodle.is-dissolving {
-      opacity: 0;
-      transform: scale(0.85);
-      filter: blur(2px);
-      transition: opacity 0.45s ease, transform 0.45s ease, filter 0.45s ease;
-    }
-    .sun-doodle.is-gone { display: none; }
-    .sun-doodle .sun-circle,
-    .sun-doodle .sun-ray {
-      fill: none;
-      stroke: currentColor;
-      stroke-width: 1.35;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
     #page-home.intro-running .theme-toggle {
       opacity: 0;
       visibility: hidden;
@@ -179,6 +153,7 @@
       visibility: visible;
       transform: none;
       pointer-events: auto;
+      transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s;
     }
 
     /* ── TYPEWRITER INTRO ── */
@@ -228,11 +203,6 @@
       pointer-events: none;
       visibility: hidden;
     }
-    #page-home.intro-running.show-aside-box .aside-stage {
-      opacity: 1;
-      visibility: visible;
-      pointer-events: none;
-    }
     #page-home.intro-running.show-aside-real .aside-real {
       opacity: 1;
       visibility: visible;
@@ -251,144 +221,6 @@
       pointer-events: auto;
       animation: fadeIn 0.7s ease both;
     }
-    #page-home.intro-done .aside-stage {
-      display: none;
-    }
-    .aside-stage {
-      position: absolute;
-      inset: -14px -4px -14px -20px;
-      opacity: 0;
-      visibility: hidden;
-      z-index: 3;
-      overflow: visible;
-    }
-    /* Google Sheets Drawing: crosshair while creating a text box */
-    .sheets-cursor {
-      position: absolute;
-      width: 18px;
-      height: 18px;
-      margin: -9px 0 0 -9px;
-      background: transparent;
-      box-sizing: border-box;
-      opacity: 0;
-      transform: scale(0.7);
-      z-index: 6;
-      pointer-events: none;
-    }
-    .sheets-cursor::before,
-    .sheets-cursor::after {
-      content: '';
-      position: absolute;
-      background: var(--ink);
-      border-radius: 0.5px;
-    }
-    .sheets-cursor::before {
-      left: 50%;
-      top: 0;
-      width: 1.5px;
-      height: 100%;
-      transform: translateX(-50%);
-    }
-    .sheets-cursor::after {
-      top: 50%;
-      left: 0;
-      height: 1.5px;
-      width: 100%;
-      transform: translateY(-50%);
-    }
-    .sheets-cursor.is-visible {
-      opacity: 1;
-      transform: scale(1);
-      transition: opacity 0.28s ease, transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), left 0.95s cubic-bezier(0.4, 0, 0.2, 1), top 0.95s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .sheets-cursor.is-clicking {
-      transform: scale(0.88);
-      transition: transform 0.1s ease;
-    }
-    .sheets-cursor.is-gone {
-      opacity: 0;
-      transition: opacity 0.25s ease;
-    }
-    /* Floating Drawing text box — transparent fill, thin border, blue selection chrome */
-    .aside-textbox {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 0;
-      height: 0;
-      overflow: visible;
-      border: 1px solid var(--ink);
-      background: transparent;
-      border-radius: 0;
-      box-sizing: border-box;
-      font-size: 0.9rem;
-      font-weight: 300;
-      line-height: 1.55;
-      color: var(--ink-mid);
-      text-align: left;
-      opacity: 0;
-      z-index: 4;
-    }
-    .aside-textbox-inner {
-      position: absolute;
-      inset: 0;
-      overflow: hidden;
-      box-sizing: border-box;
-      padding: 10px 12px;
-      white-space: normal;
-      overflow-wrap: break-word;
-      word-wrap: break-word;
-    }
-    .aside-textbox.is-drawing {
-      opacity: 1;
-      transition: width 1.05s cubic-bezier(0.4, 0, 0.2, 1), height 1.05s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.12s ease;
-    }
-    .aside-textbox.is-selected,
-    .aside-textbox.is-editing {
-      border-color: #1a73e8;
-      box-shadow: 0 0 0 1px #1a73e8;
-    }
-    .aside-textbox.is-exiting {
-      opacity: 0;
-      filter: blur(2px);
-      transform: scale(0.985);
-      transition: opacity 0.4s ease, filter 0.4s ease, transform 0.4s ease;
-    }
-    .sheets-handle {
-      position: absolute;
-      width: 7px;
-      height: 7px;
-      background: #fff;
-      border: 1.5px solid #1a73e8;
-      box-sizing: border-box;
-      opacity: 0;
-      pointer-events: none;
-      z-index: 2;
-    }
-    .aside-textbox.is-selected .sheets-handle,
-    .aside-textbox.is-editing .sheets-handle {
-      opacity: 1;
-    }
-    .sheets-handle[data-pos="nw"] { left: -4px; top: -4px; }
-    .sheets-handle[data-pos="n"]  { left: 50%; top: -4px; margin-left: -3.5px; }
-    .sheets-handle[data-pos="ne"] { right: -4px; top: -4px; }
-    .sheets-handle[data-pos="e"]  { right: -4px; top: 50%; margin-top: -3.5px; }
-    .sheets-handle[data-pos="se"] { right: -4px; bottom: -4px; }
-    .sheets-handle[data-pos="s"]  { left: 50%; bottom: -4px; margin-left: -3.5px; }
-    .sheets-handle[data-pos="sw"] { left: -4px; bottom: -4px; }
-    .sheets-handle[data-pos="w"]  { left: -4px; top: 50%; margin-top: -3.5px; }
-    .aside-typed {
-      display: none;
-      color: var(--ink-mid);
-      font-weight: 400;
-    }
-    .aside-textbox.is-typing .aside-typed {
-      display: inline;
-    }
-    .aside-textbox .caret {
-      background: var(--ink);
-      vertical-align: -0.1em;
-    }
     .aside-real {
       display: flex;
       flex-direction: column;
@@ -397,15 +229,32 @@
       position: relative;
       z-index: 1;
     }
-    .aside-real.is-revealing .company-logos a,
-    .aside-real.is-revealing .hero-meta > * {
-      animation: asidePop 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+    #page-home.intro-running .company-logos a {
+      opacity: 0;
+      transform: translateY(10px) scale(0.9);
+      pointer-events: none;
+      filter: blur(2px);
     }
-    .aside-real.is-revealing .company-logos a:nth-child(1) { animation-delay: 0ms; }
-    .aside-real.is-revealing .company-logos a:nth-child(2) { animation-delay: 90ms; }
-    .aside-real.is-revealing .company-logos a:nth-child(3) { animation-delay: 180ms; }
-    .aside-real.is-revealing .hero-meta > *:nth-child(1) { animation-delay: 260ms; }
-    .aside-real.is-revealing .hero-meta > *:nth-child(2) { animation-delay: 340ms; }
+    #page-home.intro-running .company-logos a.is-shown {
+      opacity: 1;
+      transform: none;
+      pointer-events: auto;
+      filter: none;
+      transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1), transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), filter 0.45s ease;
+    }
+    #page-home.intro-done .company-logos a {
+      opacity: 1;
+      transform: none;
+      filter: none;
+      pointer-events: auto;
+    }
+    .hero-meta .caret {
+      height: 0.85em;
+      min-width: 1.5px;
+      width: 0.06em;
+      vertical-align: -0.05em;
+      background: var(--ink-dim);
+    }
     @keyframes asidePop {
       from { opacity: 0; transform: translateY(14px) scale(0.92); filter: blur(3px); }
       to   { opacity: 1; transform: none; filter: none; }
@@ -438,8 +287,6 @@
         pointer-events: auto;
         transform: none;
       }
-      .aside-stage { display: none; }
-      .sun-doodle { display: none; }
       .project-card-wrap.rise-wait,
       .project-card-wrap.rise-in {
         opacity: 1;
@@ -1024,15 +871,136 @@
     }
 
     @media (max-width: 700px) {
+      html, body { overflow-x: clip; }
+
       .wrap, .wrap-mid { padding: 0 20px; }
-      .hero h1 { font-size: calc(2.8rem - 8pt); }
-      .hero-foot { flex-direction: column; gap: 20px; }
-      .hero-aside { align-items: flex-start; }
+
+      nav {
+        flex-wrap: wrap;
+        gap: 12px 16px;
+        padding: 20px 0 16px;
+        align-items: center;
+      }
+      .nav-name {
+        font-size: 0.72rem;
+        letter-spacing: 0.06em;
+        max-width: 100%;
+      }
+      .nav-right {
+        gap: 16px;
+        margin-left: auto;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+      .nav-right button,
+      .nav-right a {
+        min-height: 40px;
+        padding: 8px 0;
+        display: inline-flex;
+        align-items: center;
+      }
+      .theme-toggle-wrap {
+        width: 40px;
+        height: 40px;
+        flex: 0 0 40px;
+      }
+      .theme-toggle {
+        width: 40px;
+        height: 40px;
+      }
+
+      .hero { padding: 40px 0 48px; }
+      .hero h1 {
+        font-size: calc(2.4rem - 4pt);
+        margin-bottom: 28px;
+        max-width: 100%;
+        overflow-wrap: break-word;
+      }
+      .hero-foot { flex-direction: column; align-items: stretch; gap: 20px; }
+      .hero-bio { max-width: none; }
+      .hero-aside {
+        align-items: flex-start;
+        align-self: stretch;
+        min-width: 0;
+        width: 100%;
+      }
+      .aside-real { align-items: flex-start; }
       .hero-meta { text-align: left; }
       .company-logos { justify-content: flex-start; max-width: none; }
+      .hero-rule { overflow: hidden; }
+
+      /* Collapse intro-hidden sections so phones don't scroll blank space */
+      #page-home.intro-running .works-header,
+      #page-home.intro-running .project-list,
+      #page-home.intro-running .about-section,
+      #page-home.intro-running footer {
+        display: none;
+      }
+      #page-home.intro-running:not(.show-aside-real) .hero-aside {
+        height: 0;
+        min-height: 0;
+        margin: 0;
+        overflow: hidden;
+      }
+      #page-home.intro-running.show-works-stage .works-header {
+        display: flex;
+      }
+      #page-home.intro-running.show-works-stage .project-list {
+        display: block;
+      }
+      #page-home.intro-done .about-section {
+        display: block;
+      }
+      #page-home.intro-done footer {
+        display: flex;
+      }
+
+      .works-header {
+        flex-wrap: wrap;
+        gap: 8px 16px;
+        align-items: baseline;
+        padding-top: 28px;
+      }
+      .works-title { font-size: 1rem; }
+
       .project-row { grid-template-columns: 1fr; }
-      .about-inner { grid-template-columns: 1fr; gap: 40px; }
-      .cs-accordion-inner { padding: 28px 24px 36px; }
+      .project-card {
+        min-height: 220px;
+        padding: 24px 20px 0;
+      }
+      .card-actions { margin: 0 -20px; }
+      .card-btn {
+        padding: 14px 10px;
+        font-size: 0.62rem;
+        letter-spacing: 0.06em;
+        min-height: 44px;
+      }
+      .badge { left: 16px; top: 16px; }
+
+      .about-section { padding: 56px 0 64px; }
+      .about-inner { grid-template-columns: 1fr; gap: 36px; }
+      .about-text { font-size: 1.1rem; }
+
+      footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+        padding: 20px 0 28px;
+      }
+      .foot-links {
+        flex-wrap: wrap;
+        gap: 12px 18px;
+      }
+      .foot-links a {
+        min-height: 40px;
+        display: inline-flex;
+        align-items: center;
+      }
+
+      .ns-body { padding: 48px 0 80px; }
+      .ns-title { font-size: 1.85rem; }
+      .cs-pullquote p { font-size: 1.05rem; }
+      .cs-accordion-inner { padding: 28px 20px 36px; }
       .tt-media-pair {
         grid-template-columns: 1fr;
         width: 100%;
@@ -1054,20 +1022,6 @@
     </button>
     <div class="nav-right">
       <div class="theme-toggle-wrap" id="theme-toggle-wrap">
-        <svg class="sun-doodle" id="sun-doodle" viewBox="0 0 28 28" aria-hidden="true">
-          <!-- Slightly uneven, off-center circle -->
-          <path class="sun-circle" d="M15.4 6.8
-            C19.2 6.2 22.1 8.9 21.6 12.7
-            C21.2 16.4 17.9 19.6 13.8 19.0
-            C9.4 18.3 6.9 14.6 7.7 10.9
-            C8.4 7.6 11.8 7.3 15.4 6.8Z"/>
-          <!-- 5 uneven rays -->
-          <path class="sun-ray" d="M14.2 4.2 L14.6 2.3"/>
-          <path class="sun-ray" d="M20.8 7.4 L22.4 6.1"/>
-          <path class="sun-ray" d="M22.3 15.2 L24.1 15.8"/>
-          <path class="sun-ray" d="M16.1 21.2 L16.7 23.0"/>
-          <path class="sun-ray" d="M8.2 16.8 L6.5 17.6"/>
-        </svg>
         <button type="button" class="theme-toggle" data-theme-toggle aria-label="Toggle light mode" title="Toggle theme">
           <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
             <path d="M21 14.5A8.5 8.5 0 0 1 9.5 3 7 7 0 1 0 21 14.5z"/>
@@ -1096,22 +1050,6 @@
         <span class="type-line" id="type-bio"></span><span class="caret is-hidden is-large" id="caret-bio" aria-hidden="true"></span>
       </p>
       <div class="hero-aside" id="hero-aside">
-        <div class="aside-stage" id="aside-stage" aria-hidden="true">
-          <div class="sheets-cursor" id="sheets-cursor"></div>
-          <div class="aside-textbox" id="aside-textbox">
-            <span class="sheets-handle" data-pos="nw" aria-hidden="true"></span>
-            <span class="sheets-handle" data-pos="n" aria-hidden="true"></span>
-            <span class="sheets-handle" data-pos="ne" aria-hidden="true"></span>
-            <span class="sheets-handle" data-pos="e" aria-hidden="true"></span>
-            <span class="sheets-handle" data-pos="se" aria-hidden="true"></span>
-            <span class="sheets-handle" data-pos="s" aria-hidden="true"></span>
-            <span class="sheets-handle" data-pos="sw" aria-hidden="true"></span>
-            <span class="sheets-handle" data-pos="w" aria-hidden="true"></span>
-            <div class="aside-textbox-inner">
-              <span class="aside-typed" id="type-aside"></span><span class="caret is-hidden" id="caret-aside" aria-hidden="true"></span>
-            </div>
-          </div>
-        </div>
         <div class="aside-real" id="aside-real">
           <div class="company-logos" aria-label="Places I've worked">
             <a href="https://www.shopify.com" target="_blank" rel="noopener noreferrer" aria-label="Shopify">
@@ -1125,8 +1063,12 @@
             </a>
           </div>
           <div class="hero-meta">
-            <div>New York, NY</div>
-            <a class="hero-linkedin" href="https://www.linkedin.com/in/ariel-g-945081217/" target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
+            <div>
+              <span id="type-location"></span><span class="caret is-hidden" id="caret-location" aria-hidden="true"></span>
+            </div>
+            <a class="hero-linkedin" href="https://www.linkedin.com/in/ariel-g-945081217/" target="_blank" rel="noopener noreferrer">
+              <span id="type-linkedin"></span><span class="caret is-hidden" id="caret-linkedin" aria-hidden="true"></span>
+            </a>
           </div>
         </div>
       </div>
@@ -1716,20 +1658,27 @@
 <script>
   (function () {
     var reduceMotion = false;
+    var isNarrow = false;
     try {
       reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      isNarrow = window.matchMedia('(max-width: 700px)').matches;
     } catch (e) {}
 
     var NAME_FULL = 'My name is Ariel Greenblatt.';
     var NAME_KEEP = 'Ariel Greenblatt';
     var NAME_DELETE = 'My name is ';
     var HEADLINE = 'I build products to solve problems wherever I find them.';
-    var BIO_LEAD = "I'm a Columbia University Dual Degree student pursuing a BA in CS and a BA in History. I'm currently interning at Shopify in Product R&D, working on agentic AI to surface user insights for our entire company. ";
+    var BIO_PRE = "I'm a Columbia University Dual Degree student pursuing a BA in CS and a BA in History. ";
+    var BIO_TO_SHOPIFY = "I'm currently interning at ";
+    var BIO_SHOPIFY = 'Shopify';
+    var BIO_AFTER_SHOPIFY = ' in Product R&D, working on agentic AI to surface user insights for our entire company. ';
+    var BIO_LEAD = BIO_PRE + BIO_TO_SHOPIFY + BIO_SHOPIFY + BIO_AFTER_SHOPIFY;
     var BIO_BOLD = 'I blend developer ability with care for context.';
     var BIO = BIO_LEAD + BIO_BOLD;
     var ABOUT = 'About';
     var CONTACT = 'Contact';
-    var ASIDE_PROMPT = 'Add logos + location + linkedin';
+    var LOCATION = 'New York, NY';
+    var LINKEDIN = 'LinkedIn ↗';
     var WORKS_PROMPT = 'See my selected works below:';
     var WORKS_FINAL = 'Selected works';
     var WORKS_RANGE = "'23–'26";
@@ -1740,7 +1689,7 @@
       headline: 52,
       nav: 85,
       bio: 18,
-      aside: 55,
+      aside: 38,
       works: 48,
       range: 70,
       delete: 45
@@ -1820,13 +1769,20 @@
     function finishIntro() {
       var home = document.getElementById('page-home');
       if (!home) return;
-      home.classList.remove('intro-running', 'show-aside-box', 'show-aside-real', 'show-works-stage');
+      home.classList.remove('intro-running', 'show-aside-real', 'show-works-stage');
       home.classList.add('intro-done', 'theme-ready');
       [
         'caret-name', 'caret-headline', 'caret-about', 'caret-contact',
-        'caret-bio', 'caret-aside', 'caret-works', 'caret-range'
+        'caret-bio', 'caret-location', 'caret-linkedin', 'caret-works', 'caret-range'
       ].forEach(function (id) {
         hideCaret(document.getElementById(id));
+      });
+      var locEl = document.getElementById('type-location');
+      var linkEl = document.getElementById('type-linkedin');
+      if (locEl && !locEl.textContent) locEl.textContent = LOCATION;
+      if (linkEl && !linkEl.textContent) linkEl.textContent = LINKEDIN;
+      document.querySelectorAll('.company-logos a').forEach(function (a) {
+        a.classList.add('is-shown');
       });
       var range = document.getElementById('works-range');
       if (range) range.classList.remove('is-hidden');
@@ -1836,12 +1792,6 @@
         el.classList.remove('rise-wait');
         el.classList.add('rise-in');
       });
-      var box = document.getElementById('aside-textbox');
-      if (box) box.style.display = 'none';
-      var stage = document.getElementById('aside-stage');
-      if (stage) stage.style.display = 'none';
-      var doodle = document.getElementById('sun-doodle');
-      if (doodle) doodle.classList.add('is-gone');
       var rule = document.getElementById('hero-rule');
       if (rule) {
         rule.classList.add('is-settled');
@@ -1857,6 +1807,8 @@
       var bioEl = document.getElementById('type-bio');
       var worksEl = document.getElementById('type-works');
       var rangeEl = document.getElementById('type-range');
+      var locEl = document.getElementById('type-location');
+      var linkEl = document.getElementById('type-linkedin');
       if (nameEl) nameEl.textContent = NAME_KEEP;
       if (headlineEl) headlineEl.textContent = HEADLINE;
       if (aboutEl) aboutEl.textContent = ABOUT;
@@ -1864,178 +1816,33 @@
       if (bioEl) setBioFinal(bioEl);
       if (worksEl) worksEl.textContent = WORKS_FINAL;
       if (rangeEl) rangeEl.textContent = WORKS_RANGE;
+      if (locEl) locEl.textContent = LOCATION;
+      if (linkEl) linkEl.textContent = LINKEDIN;
       finishIntro();
     }
 
-    async function drawSunDoodle() {
-      var home = document.getElementById('page-home');
-      var doodle = document.getElementById('sun-doodle');
-      if (!doodle) {
-        if (home) home.classList.add('theme-ready');
-        return;
-      }
-      var circle = doodle.querySelector('.sun-circle');
-      var rays = doodle.querySelectorAll('.sun-ray');
-      doodle.classList.remove('is-gone', 'is-dissolving');
-      doodle.classList.add('is-drawing');
-
-      function hideStroke(el) {
-        var len = 0;
-        try { len = el.getTotalLength(); } catch (e) { len = 24; }
-        el.style.transition = 'none';
-        el.style.strokeDasharray = String(len);
-        el.style.strokeDashoffset = String(len);
-      }
-
-      function drawStroke(el, duration) {
-        el.getBoundingClientRect();
-        el.style.transition = 'stroke-dashoffset ' + duration + 'ms ease-out';
-        el.style.strokeDashoffset = '0';
-        return duration;
-      }
-
-      // Hide rays first so only the circle is visible while it draws
-      if (circle) hideStroke(circle);
-      for (var r = 0; r < rays.length; r++) hideStroke(rays[r]);
-      doodle.getBoundingClientRect();
-
-      if (circle) {
-        await wait(drawStroke(circle, 1100) + 40);
-      }
-
-      // Hold on circle alone for half a second, then draw rays
-      await wait(500);
-
-      for (var i = 0; i < rays.length; i++) {
-        await wait(drawStroke(rays[i], 220) + 70);
-      }
-
-      await wait(380);
-      doodle.classList.add('is-dissolving');
-      if (home) home.classList.add('theme-ready');
-      await wait(480);
-      doodle.classList.add('is-gone');
-      doodle.classList.remove('is-drawing', 'is-dissolving');
+    async function typeAsideMeta() {
+      var locEl = document.getElementById('type-location');
+      var linkEl = document.getElementById('type-linkedin');
+      var caretLoc = document.getElementById('caret-location');
+      var caretLink = document.getElementById('caret-linkedin');
+      if (!locEl || !linkEl) return;
+      await Promise.all([
+        typeInto(locEl, caretLoc, LOCATION, SPEED.aside),
+        typeInto(linkEl, caretLink, LINKEDIN, SPEED.aside)
+      ]);
+      hideCaret(caretLoc);
+      hideCaret(caretLink);
     }
 
-    async function drawAsideTextbox() {
-      var home = document.getElementById('page-home');
-      var aside = document.getElementById('hero-aside');
-      var stage = document.getElementById('aside-stage');
-      var cursor = document.getElementById('sheets-cursor');
-      var box = document.getElementById('aside-textbox');
-      var asideEl = document.getElementById('type-aside');
-      var caretAside = document.getElementById('caret-aside');
+    async function revealLogosInOrder() {
       var asideReal = document.getElementById('aside-real');
-      if (!aside || !stage || !cursor || !box || !asideReal) return;
-
-      if (home) home.classList.add('show-aside-box');
-      stage.style.display = '';
-      stage.setAttribute('aria-hidden', 'false');
-
-      var stageRect = stage.getBoundingClientRect();
-      var wrapEl = document.querySelector('#page-home .wrap') || document.querySelector('.wrap');
-      var wrapRect = wrapEl ? wrapEl.getBoundingClientRect() : stageRect;
-      var shopify = asideReal.querySelector('.company-logos a[aria-label="Shopify"]') ||
-        asideReal.querySelector('.company-logos a');
-      var linkedin = asideReal.querySelector('.hero-linkedin');
-      if (!shopify || !linkedin) return;
-
-      var logoRect = shopify.getBoundingClientRect();
-      var linkRect = linkedin.getBoundingClientRect();
-      var logosRow = asideReal.querySelector('.company-logos');
-      var metaRow = asideReal.querySelector('.hero-meta');
-      var contentLeft = logosRow
-        ? logosRow.getBoundingClientRect().left
-        : logoRect.left;
-      var contentTop = logoRect.top;
-      var contentRight = Math.max(linkRect.right, logoRect.right);
-      var contentBottom = metaRow
-        ? metaRow.getBoundingClientRect().bottom
-        : linkRect.bottom;
-
-      // Keep the box snug around logos/meta and inside the page wrap
-      var pad = 10;
-      var handlePad = 6;
-      var minX = Math.max(0, wrapRect.left - stageRect.left + handlePad);
-      var maxX = Math.min(stageRect.width - handlePad, wrapRect.right - stageRect.left - handlePad);
-      var minY = Math.max(0, wrapRect.top - stageRect.top + handlePad);
-      var maxY = stageRect.height - handlePad;
-
-      var startX = Math.max(minX, contentLeft - stageRect.left - pad);
-      var startY = Math.max(minY, contentTop - stageRect.top - pad);
-      var endX = Math.min(maxX, contentRight - stageRect.left + pad);
-      var endY = Math.min(maxY, contentBottom - stageRect.top + pad);
-
-      // Guarantee a readable box without spilling past the wrap
-      if (endX - startX < 160) {
-        startX = Math.max(minX, endX - 160);
+      if (!asideReal) return;
+      var logos = asideReal.querySelectorAll('.company-logos a');
+      for (var i = 0; i < logos.length; i++) {
+        logos[i].classList.add('is-shown');
+        await wait(220);
       }
-      if (endY - startY < 64) {
-        startY = Math.max(minY, endY - 64);
-      }
-      var width = Math.max(endX - startX, 1);
-      var height = Math.max(endY - startY, 1);
-
-      // Crosshair arrives at origin
-      cursor.style.transition = 'none';
-      cursor.style.left = startX + 'px';
-      cursor.style.top = startY + 'px';
-      cursor.classList.remove('is-gone', 'is-clicking');
-      cursor.getBoundingClientRect();
-      cursor.classList.add('is-visible');
-      await wait(400);
-
-      // Click + hold to begin drawing
-      cursor.classList.add('is-clicking');
-      await wait(140);
-
-      // Empty box grows with the crosshair (no placeholder — Sheets Drawing default)
-      box.classList.remove(
-        'is-exiting', 'is-typing', 'is-selected', 'is-editing', 'is-drawing'
-      );
-      box.style.left = startX + 'px';
-      box.style.top = startY + 'px';
-      box.style.width = '0px';
-      box.style.height = '0px';
-      if (asideEl) asideEl.textContent = '';
-      hideCaret(caretAside);
-      box.getBoundingClientRect();
-      box.classList.add('is-drawing');
-
-      cursor.style.transition =
-        'left 1.05s cubic-bezier(0.4, 0, 0.2, 1), top 1.05s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease, transform 0.2s ease';
-      cursor.style.left = endX + 'px';
-      cursor.style.top = endY + 'px';
-      box.style.width = width + 'px';
-      box.style.height = height + 'px';
-      await wait(1080);
-
-      // Release — object selected with blue border + 8 resize handles
-      cursor.classList.remove('is-clicking');
-      cursor.classList.add('is-gone');
-      box.classList.add('is-selected');
-      await wait(480);
-
-      // Double-click to edit: caret appears, type into the floating text box
-      box.classList.add('is-editing', 'is-typing');
-      showCaret(caretAside);
-      await wait(220);
-      await typeInto(asideEl, caretAside, ASIDE_PROMPT, SPEED.aside);
-      hideCaret(caretAside);
-      if (asideEl) asideEl.textContent = ASIDE_PROMPT;
-      await wait(520);
-
-      box.classList.add('is-exiting');
-      await wait(360);
-      if (home) {
-        home.classList.remove('show-aside-box');
-        home.classList.add('show-aside-real');
-      }
-      asideReal.classList.add('is-revealing');
-      await wait(850);
-      stage.style.display = 'none';
-      stage.setAttribute('aria-hidden', 'true');
     }
 
     async function drawHeroRule() {
@@ -2115,49 +1922,60 @@
       showCaret(caretName);
       await wait(800);
 
-      await typeInto(nameEl, caretName, NAME_FULL, SPEED.name);
-      await wait(480);
+      // On phones, type the final name only — the long morph overflows the nav
+      if (isNarrow) {
+        await typeInto(nameEl, caretName, NAME_KEEP, SPEED.name);
+        hideCaret(caretName);
+        nameEl.textContent = NAME_KEEP;
+        await wait(220);
+        showCaret(caretHeadline);
+      } else {
+        await typeInto(nameEl, caretName, NAME_FULL, SPEED.name);
+        await wait(480);
 
-      hideCaret(caretName);
-      // Caret jumps to headline at nav size, then grows to headline size
-      showCaret(caretHeadline);
-      caretHeadline.style.transition = 'none';
-      caretHeadline.style.fontSize = '0.82rem';
-      caretHeadline.style.height = '1em';
-      caretHeadline.style.width = '0.08em';
-      caretHeadline.style.minWidth = '2px';
-      caretHeadline.getBoundingClientRect();
-      caretHeadline.style.transition = 'font-size 0.65s cubic-bezier(0.22, 1, 0.36, 1), height 0.65s ease, width 0.65s ease, min-width 0.65s ease';
-      await wait(60);
-      caretHeadline.style.fontSize = '1em';
-      await wait(700);
-      caretHeadline.style.fontSize = '';
-      caretHeadline.style.height = '';
-      caretHeadline.style.width = '';
-      caretHeadline.style.minWidth = '';
-      caretHeadline.style.transition = '';
+        hideCaret(caretName);
+        // Caret jumps to headline at nav size, then grows to headline size
+        showCaret(caretHeadline);
+        caretHeadline.style.transition = 'none';
+        caretHeadline.style.fontSize = '0.82rem';
+        caretHeadline.style.height = '1em';
+        caretHeadline.style.width = '0.08em';
+        caretHeadline.style.minWidth = '2px';
+        caretHeadline.getBoundingClientRect();
+        caretHeadline.style.transition = 'font-size 0.65s cubic-bezier(0.22, 1, 0.36, 1), height 0.65s ease, width 0.65s ease, min-width 0.65s ease';
+        await wait(60);
+        caretHeadline.style.fontSize = '1em';
+        await wait(700);
+        caretHeadline.style.fontSize = '';
+        caretHeadline.style.height = '';
+        caretHeadline.style.width = '';
+        caretHeadline.style.minWidth = '';
+        caretHeadline.style.transition = '';
+      }
 
       var headlinePromise = typeInto(headlineEl, caretHeadline, HEADLINE, SPEED.headline);
 
-      await wait(700);
-      var keepStart = NAME_DELETE.length;
-      var suffix = NAME_FULL.slice(keepStart);
-      nameEl.innerHTML =
-        '<span class="type-highlight">' + NAME_DELETE + '</span>' + suffix;
-      await wait(650);
-
-      var remainingPrefix = NAME_DELETE;
-      while (remainingPrefix.length > 0) {
-        remainingPrefix = remainingPrefix.slice(0, -1);
+      if (!isNarrow) {
+        await wait(700);
+        var keepStart = NAME_DELETE.length;
+        var suffix = NAME_FULL.slice(keepStart);
         nameEl.innerHTML =
-          (remainingPrefix
-            ? '<span class="type-highlight">' + remainingPrefix + '</span>'
-            : '') + suffix;
-        await wait(SPEED.delete);
-      }
+          '<span class="type-highlight">' + NAME_DELETE + '</span>' + suffix;
+        await wait(650);
 
-      nameEl.textContent = NAME_KEEP;
-      await wait(120);
+        var remainingPrefix = NAME_DELETE;
+        while (remainingPrefix.length > 0) {
+          remainingPrefix = remainingPrefix.slice(0, -1);
+          nameEl.innerHTML =
+            (remainingPrefix
+              ? '<span class="type-highlight">' + remainingPrefix + '</span>'
+              : '') + suffix;
+          await wait(SPEED.delete);
+        }
+
+        nameEl.textContent = NAME_KEEP;
+        await wait(120);
+      }
 
       await wait(220);
       aboutEl.textContent = '';
@@ -2173,11 +1991,14 @@
       hideCaret(caretContact);
       contactEl.textContent = CONTACT;
 
+      // Theme toggle appears once About + Contact are written
+      if (home) home.classList.add('theme-ready');
+
       await headlinePromise;
       hideCaret(caretHeadline);
       headlineEl.textContent = HEADLINE;
 
-      // No pause — bio starts immediately; sun draws in parallel
+      // Bio starts immediately after headline finishes
       showCaret(caretBio);
       caretBio.classList.remove('is-large');
       caretBio.style.fontSize = '';
@@ -2186,9 +2007,19 @@
       caretBio.style.minWidth = '';
       caretBio.style.transition = '';
 
-      var sunPromise = drawSunDoodle();
+      await typeInto(bioEl, caretBio, BIO_PRE, SPEED.bio);
 
-      await typeInto(bioEl, caretBio, BIO_LEAD, SPEED.bio);
+      // Reveal aside; type location + LinkedIn while bio hits the Shopify line
+      if (home) home.classList.add('show-aside-real');
+      if (isNarrow) await wait(32);
+      var metaPromise = typeAsideMeta();
+      var rulePromise = drawHeroRule();
+
+      await typeIntoNode(bioEl, caretBio, BIO_TO_SHOPIFY, SPEED.bio);
+      await typeIntoNode(bioEl, caretBio, BIO_SHOPIFY, SPEED.bio);
+      var logosPromise = revealLogosInOrder();
+      await typeIntoNode(bioEl, caretBio, BIO_AFTER_SHOPIFY, SPEED.bio);
+
       var boldNode = document.createElement('strong');
       boldNode.style.fontWeight = '700';
       boldNode.textContent = '';
@@ -2197,32 +2028,37 @@
       hideCaret(caretBio);
       setBioFinal(bioEl);
 
-      await sunPromise;
-      await wait(280);
-
-      // Google Sheets Drawing-style textbox drag + hero rule in parallel
-      var rulePromise = drawHeroRule();
-      await drawAsideTextbox();
-      await rulePromise;
-      await wait(280);
+      await Promise.all([metaPromise, logosPromise, rulePromise]);
+      await wait(200);
 
       // Works prompt + rising cards
       if (home) home.classList.add('show-works-stage');
       worksEl.textContent = '';
       showCaret(caretWorks);
       await wait(250);
-      await typeInto(worksEl, caretWorks, WORKS_PROMPT, SPEED.works);
-      await wait(400);
-
-      // Rise Signal, then Course Vault — then morph title
-      // Rise Signal, then Course Vault — then morph title while remaining cards keep rising
-      await riseCard(1);
-      await riseCard(2);
-      var morphPromise = morphWorksText(worksEl, caretWorks);
-      await riseCard(3);
-      await riseCard(4);
-      await riseCard(5);
-      await morphPromise;
+      if (isNarrow) {
+        // Shorter label fits small screens; skip the long morph
+        await typeInto(worksEl, caretWorks, WORKS_FINAL, SPEED.works);
+        hideCaret(caretWorks);
+        worksEl.textContent = WORKS_FINAL;
+        await wait(280);
+        await riseCard(1);
+        await riseCard(2);
+        await riseCard(3);
+        await riseCard(4);
+        await riseCard(5);
+      } else {
+        await typeInto(worksEl, caretWorks, WORKS_PROMPT, SPEED.works);
+        await wait(400);
+        // Rise Signal, then Course Vault — then morph title while remaining cards keep rising
+        await riseCard(1);
+        await riseCard(2);
+        var morphPromise = morphWorksText(worksEl, caretWorks);
+        await riseCard(3);
+        await riseCard(4);
+        await riseCard(5);
+        await morphPromise;
+      }
 
       // Type the year range after Selected works is cleaned up
       if (worksRange) worksRange.classList.remove('is-hidden');

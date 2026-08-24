@@ -229,35 +229,12 @@
       position: relative;
       z-index: 1;
     }
-    #page-home.intro-running .company-logos a {
-      opacity: 0;
-      transform: translateY(10px) scale(0.9);
-      pointer-events: none;
-      filter: blur(2px);
-    }
-    #page-home.intro-running .company-logos a.is-shown {
-      opacity: 1;
-      transform: none;
-      pointer-events: auto;
-      filter: none;
-      transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1), transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), filter 0.45s ease;
-    }
-    #page-home.intro-done .company-logos a {
-      opacity: 1;
-      transform: none;
-      filter: none;
-      pointer-events: auto;
-    }
     .hero-meta .caret {
       height: 0.85em;
       min-width: 1.5px;
       width: 0.06em;
       vertical-align: -0.05em;
       background: var(--ink-dim);
-    }
-    @keyframes asidePop {
-      from { opacity: 0; transform: translateY(14px) scale(0.92); filter: blur(3px); }
-      to   { opacity: 1; transform: none; filter: none; }
     }
     .works-range.is-hidden { opacity: 0; visibility: hidden; }
     .works-range {
@@ -1332,7 +1309,7 @@
           <br/><br/>
           <strong style="font-weight:700;">I build products to make work and school easier for me and the people around me, and I'm always working on something new.</strong>
           <br/><br/>
-          This summer, I'm interning at Shopify in Research & Development, working on software and data engineering. Earlier, I interned at TikTok in Business Development, working on product partnerships with Fortune 500 companies, and at CET Sandbox — a hub for deep-tech startups — as a Solutions Engineer.
+          This summer, I'm a PM intern at Shopify, owning discovery to implementation on a company-wide agentic AI platform. Earlier, I interned at TikTok in Business Development, working on product partnerships with Fortune 500 companies, and at CET Sandbox — a hub for deep-tech startups — as a Solutions Engineer.
           <br/><br/>
           Outside of work I'm traveling, playing sports, or finding my next favorite restaurant.
         </div>
@@ -1340,7 +1317,7 @@
       <div>
         <div class="about-row">
           <span class="about-row-label">Currently</span>
-          <span class="about-row-val">Shopify · Research &amp; Development Intern<br/>Columbia University · CS &amp; History, Class of 2027</span>
+          <span class="about-row-val">Shopify · Product Management<br/>Columbia University · CS &amp; History, Class of 2027</span>
         </div>
         <div class="about-row">
           <span class="about-row-label">Previously</span>
@@ -1669,9 +1646,9 @@
     var NAME_DELETE = 'My name is ';
     var HEADLINE = 'I build products to solve problems wherever I find them.';
     var BIO_PRE = "I'm a Columbia University Dual Degree student pursuing a BA in CS and a BA in History. ";
-    var BIO_TO_SHOPIFY = "I'm currently interning at ";
+    var BIO_TO_SHOPIFY = "I'm currently a PM intern at ";
     var BIO_SHOPIFY = 'Shopify';
-    var BIO_AFTER_SHOPIFY = ' in Product R&D, working on agentic AI to surface user insights for our entire company. ';
+    var BIO_AFTER_SHOPIFY = ', working on agentic AI to surface user insights for our entire company. ';
     var BIO_LEAD = BIO_PRE + BIO_TO_SHOPIFY + BIO_SHOPIFY + BIO_AFTER_SHOPIFY;
     var BIO_BOLD = 'I blend developer ability with care for context.';
     var BIO = BIO_LEAD + BIO_BOLD;
@@ -1689,7 +1666,7 @@
       headline: 52,
       nav: 85,
       bio: 18,
-      aside: 38,
+      aside: 14,
       works: 48,
       range: 70,
       delete: 45
@@ -1781,9 +1758,6 @@
       var linkEl = document.getElementById('type-linkedin');
       if (locEl && !locEl.textContent) locEl.textContent = LOCATION;
       if (linkEl && !linkEl.textContent) linkEl.textContent = LINKEDIN;
-      document.querySelectorAll('.company-logos a').forEach(function (a) {
-        a.classList.add('is-shown');
-      });
       var range = document.getElementById('works-range');
       if (range) range.classList.remove('is-hidden');
       var rangeText = document.getElementById('type-range');
@@ -1833,16 +1807,6 @@
       ]);
       hideCaret(caretLoc);
       hideCaret(caretLink);
-    }
-
-    async function revealLogosInOrder() {
-      var asideReal = document.getElementById('aside-real');
-      if (!asideReal) return;
-      var logos = asideReal.querySelectorAll('.company-logos a');
-      for (var i = 0; i < logos.length; i++) {
-        logos[i].classList.add('is-shown');
-        await wait(220);
-      }
     }
 
     async function drawHeroRule() {
@@ -2017,7 +1981,6 @@
 
       await typeIntoNode(bioEl, caretBio, BIO_TO_SHOPIFY, SPEED.bio);
       await typeIntoNode(bioEl, caretBio, BIO_SHOPIFY, SPEED.bio);
-      var logosPromise = revealLogosInOrder();
       await typeIntoNode(bioEl, caretBio, BIO_AFTER_SHOPIFY, SPEED.bio);
 
       var boldNode = document.createElement('strong');
@@ -2028,7 +1991,7 @@
       hideCaret(caretBio);
       setBioFinal(bioEl);
 
-      await Promise.all([metaPromise, logosPromise, rulePromise]);
+      await Promise.all([metaPromise, rulePromise]);
       await wait(200);
 
       // Works prompt + rising cards

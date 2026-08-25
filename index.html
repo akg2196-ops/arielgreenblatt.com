@@ -141,19 +141,17 @@
       height: 28px;
       flex: 0 0 28px;
     }
+    /* Theme toggle stays hidden until About + Contact finish — no doodle / draw animation */
     #page-home.intro-running .theme-toggle {
       opacity: 0;
       visibility: hidden;
-      transform: scale(0.85);
       pointer-events: none;
     }
     #page-home.intro-running.theme-ready .theme-toggle,
     #page-home.intro-done .theme-toggle {
       opacity: 1;
       visibility: visible;
-      transform: none;
       pointer-events: auto;
-      transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s;
     }
 
     /* ── TYPEWRITER INTRO ── */

@@ -154,6 +154,73 @@
       pointer-events: auto;
     }
 
+    /* ── SKIP INTRO (fixed to viewport; must live on <body>, not inside .page) ── */
+    .skip-intro {
+      position: fixed;
+      right: max(16px, env(safe-area-inset-right));
+      bottom: max(16px, env(safe-area-inset-bottom));
+      z-index: 9999;
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      border: 1px solid rgba(22, 21, 19, 0.1);
+      border-radius: 50%;
+      background: #FBF9F5;
+      color: rgba(22, 21, 19, 0.45);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: none;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transform: translateY(4px) scale(0.96);
+      transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.3s, background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .skip-intro.is-visible {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transform: none;
+    }
+    .skip-intro:hover {
+      background: #FFFFFF;
+      color: rgba(22, 21, 19, 0.7);
+      border-color: rgba(22, 21, 19, 0.16);
+    }
+    .skip-intro:active {
+      transform: scale(0.95);
+    }
+    .skip-intro svg {
+      width: 13px;
+      height: 13px;
+      display: block;
+    }
+    html[data-theme="dark"] .skip-intro {
+      background: #141414;
+      color: rgba(240, 237, 232, 0.4);
+      border-color: rgba(240, 237, 232, 0.1);
+    }
+    html[data-theme="dark"] .skip-intro:hover {
+      background: #1A1A1A;
+      color: rgba(240, 237, 232, 0.65);
+      border-color: rgba(240, 237, 232, 0.18);
+    }
+    @media (max-width: 700px) {
+      .skip-intro {
+        width: 30px;
+        height: 30px;
+        right: max(14px, env(safe-area-inset-right));
+        bottom: max(14px, env(safe-area-inset-bottom));
+      }
+      .skip-intro svg {
+        width: 12px;
+        height: 12px;
+      }
+    }
+
     /* ── TYPEWRITER INTRO ── */
     .caret {
       display: inline-block;
@@ -987,6 +1054,13 @@
 </head>
 <body>
 
+<button type="button" class="skip-intro" id="skip-intro" data-skip-intro aria-label="Skip intro" title="Skip intro">
+  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path d="M5 12h12.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    <path d="M13 6.5L19.5 12 13 17.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+</button>
+
 <!-- ═══════════════ HOME ═══════════════ -->
 <div class="page active intro-running" id="page-home">
 <div class="wrap">
@@ -1631,6 +1705,7 @@
   (function () {
     var reduceMotion = false;
     var isNarrow = false;
+    var introAborted = false;
     try {
       reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       isNarrow = window.matchMedia('(max-width: 700px)').matches;
@@ -1668,7 +1743,15 @@
     };
 
     function wait(ms) {
-      return new Promise(function (resolve) { setTimeout(resolve, ms); });
+      return new Promise(function (resolve) {
+        if (introAborted) {
+          resolve();
+          return;
+        }
+        setTimeout(function () {
+          resolve();
+        }, ms);
+      });
     }
 
     function showCaret(el) {
@@ -1681,13 +1764,29 @@
       el.classList.add('is-hidden');
     }
 
+    function showSkipIntro() {
+      var btn = document.getElementById('skip-intro');
+      if (!btn || introAborted) return;
+      btn.classList.add('is-visible');
+    }
+
+    function hideSkipIntro() {
+      var btn = document.getElementById('skip-intro');
+      if (!btn) return;
+      btn.classList.remove('is-visible');
+    }
+
     function typeInto(target, caret, text, msPerChar) {
       return new Promise(function (resolve) {
+        if (introAborted || !target) {
+          resolve();
+          return;
+        }
         var i = 0;
         target.textContent = '';
         showCaret(caret);
         function step() {
-          if (i >= text.length) {
+          if (introAborted || i >= text.length) {
             resolve();
             return;
           }
@@ -1701,10 +1800,14 @@
 
     function typeIntoNode(node, caret, text, msPerChar) {
       return new Promise(function (resolve) {
+        if (introAborted || !node) {
+          resolve();
+          return;
+        }
         var i = 0;
         showCaret(caret);
         function step() {
-          if (i >= text.length) {
+          if (introAborted || i >= text.length) {
             resolve();
             return;
           }
@@ -1723,9 +1826,13 @@
 
     function deleteChars(target, count, msPerChar) {
       return new Promise(function (resolve) {
+        if (introAborted || !target) {
+          resolve();
+          return;
+        }
         var left = count;
         function step() {
-          if (left <= 0) {
+          if (introAborted || left <= 0) {
             resolve();
             return;
           }
@@ -1743,6 +1850,7 @@
       if (!home) return;
       home.classList.remove('intro-running', 'show-aside-real', 'show-works-stage');
       home.classList.add('intro-done', 'theme-ready');
+      hideSkipIntro();
       [
         'caret-name', 'caret-headline', 'caret-about', 'caret-contact',
         'caret-bio', 'caret-location', 'caret-linkedin', 'caret-works', 'caret-range'
@@ -1769,6 +1877,8 @@
     }
 
     function skipToFinal() {
+      introAborted = true;
+      hideSkipIntro();
       var nameEl = document.getElementById('type-name');
       var headlineEl = document.getElementById('type-headline');
       var aboutEl = document.getElementById('type-about');
@@ -1820,6 +1930,7 @@
     }
 
     async function riseCard(n) {
+      if (introAborted) return;
       var el = document.querySelector('.project-card-wrap[data-rise="' + n + '"]');
       if (!el) return;
       el.classList.remove('rise-wait');
@@ -1880,17 +1991,24 @@
       nameEl.textContent = '';
       showCaret(caretName);
       await wait(800);
+      if (introAborted) return;
 
       // On phones, type the final name only — the long morph overflows the nav
       if (isNarrow) {
         await typeInto(nameEl, caretName, NAME_KEEP, SPEED.name);
+        if (introAborted) return;
         hideCaret(caretName);
         nameEl.textContent = NAME_KEEP;
+        showSkipIntro();
         await wait(220);
+        if (introAborted) return;
         showCaret(caretHeadline);
       } else {
         await typeInto(nameEl, caretName, NAME_FULL, SPEED.name);
+        if (introAborted) return;
+        showSkipIntro();
         await wait(480);
+        if (introAborted) return;
 
         hideCaret(caretName);
         // Caret jumps to headline at nav size, then grows to headline size
@@ -1903,8 +2021,10 @@
         caretHeadline.getBoundingClientRect();
         caretHeadline.style.transition = 'font-size 0.65s cubic-bezier(0.22, 1, 0.36, 1), height 0.65s ease, width 0.65s ease, min-width 0.65s ease';
         await wait(60);
+        if (introAborted) return;
         caretHeadline.style.fontSize = '1em';
         await wait(700);
+        if (introAborted) return;
         caretHeadline.style.fontSize = '';
         caretHeadline.style.height = '';
         caretHeadline.style.width = '';
@@ -1916,14 +2036,17 @@
 
       if (!isNarrow) {
         await wait(700);
+        if (introAborted) return;
         var keepStart = NAME_DELETE.length;
         var suffix = NAME_FULL.slice(keepStart);
         nameEl.innerHTML =
           '<span class="type-highlight">' + NAME_DELETE + '</span>' + suffix;
         await wait(650);
+        if (introAborted) return;
 
         var remainingPrefix = NAME_DELETE;
         while (remainingPrefix.length > 0) {
+          if (introAborted) return;
           remainingPrefix = remainingPrefix.slice(0, -1);
           nameEl.innerHTML =
             (remainingPrefix
@@ -1934,19 +2057,24 @@
 
         nameEl.textContent = NAME_KEEP;
         await wait(120);
+        if (introAborted) return;
       }
 
       await wait(220);
+      if (introAborted) return;
       aboutEl.textContent = '';
       showCaret(caretAbout);
       await typeInto(aboutEl, caretAbout, ABOUT, SPEED.nav);
+      if (introAborted) return;
       hideCaret(caretAbout);
       aboutEl.textContent = ABOUT;
 
       await wait(180);
+      if (introAborted) return;
       contactEl.textContent = '';
       showCaret(caretContact);
       await typeInto(contactEl, caretContact, CONTACT, SPEED.nav);
+      if (introAborted) return;
       hideCaret(caretContact);
       contactEl.textContent = CONTACT;
 
@@ -1954,6 +2082,7 @@
       if (home) home.classList.add('theme-ready');
 
       await headlinePromise;
+      if (introAborted) return;
       hideCaret(caretHeadline);
       headlineEl.textContent = HEADLINE;
 
@@ -1967,39 +2096,50 @@
       caretBio.style.transition = '';
 
       await typeInto(bioEl, caretBio, BIO_PRE, SPEED.bio);
+      if (introAborted) return;
 
       // Reveal aside; type location + LinkedIn while bio hits the Shopify line
       if (home) home.classList.add('show-aside-real');
       if (isNarrow) await wait(32);
+      if (introAborted) return;
       var metaPromise = typeAsideMeta();
       var rulePromise = drawHeroRule();
 
       await typeIntoNode(bioEl, caretBio, BIO_TO_SHOPIFY, SPEED.bio);
+      if (introAborted) return;
       await typeIntoNode(bioEl, caretBio, BIO_SHOPIFY, SPEED.bio);
+      if (introAborted) return;
       await typeIntoNode(bioEl, caretBio, BIO_AFTER_SHOPIFY, SPEED.bio);
+      if (introAborted) return;
 
       var boldNode = document.createElement('strong');
       boldNode.style.fontWeight = '700';
       boldNode.textContent = '';
       bioEl.appendChild(boldNode);
       await typeIntoNode(boldNode, caretBio, BIO_BOLD, SPEED.bio);
+      if (introAborted) return;
       hideCaret(caretBio);
       setBioFinal(bioEl);
 
       await Promise.all([metaPromise, rulePromise]);
+      if (introAborted) return;
       await wait(200);
+      if (introAborted) return;
 
       // Works prompt + rising cards
       if (home) home.classList.add('show-works-stage');
       worksEl.textContent = '';
       showCaret(caretWorks);
       await wait(250);
+      if (introAborted) return;
       if (isNarrow) {
         // Shorter label fits small screens; skip the long morph
         await typeInto(worksEl, caretWorks, WORKS_FINAL, SPEED.works);
+        if (introAborted) return;
         hideCaret(caretWorks);
         worksEl.textContent = WORKS_FINAL;
         await wait(280);
+        if (introAborted) return;
         await riseCard(1);
         await riseCard(2);
         await riseCard(3);
@@ -2007,29 +2147,41 @@
         await riseCard(5);
       } else {
         await typeInto(worksEl, caretWorks, WORKS_PROMPT, SPEED.works);
+        if (introAborted) return;
         await wait(400);
+        if (introAborted) return;
         // Rise Signal, then Course Vault — then morph title while remaining cards keep rising
         await riseCard(1);
+        if (introAborted) return;
         await riseCard(2);
+        if (introAborted) return;
         var morphPromise = morphWorksText(worksEl, caretWorks);
         await riseCard(3);
+        if (introAborted) return;
         await riseCard(4);
+        if (introAborted) return;
         await riseCard(5);
+        if (introAborted) return;
         await morphPromise;
+        if (introAborted) return;
       }
 
       // Type the year range after Selected works is cleaned up
+      if (introAborted) return;
       if (worksRange) worksRange.classList.remove('is-hidden');
       var rangeEl = document.getElementById('type-range');
       var caretRange = document.getElementById('caret-range');
       if (rangeEl) {
         await wait(220);
+        if (introAborted) return;
         await typeInto(rangeEl, caretRange, WORKS_RANGE, SPEED.range);
+        if (introAborted) return;
         hideCaret(caretRange);
         rangeEl.textContent = WORKS_RANGE;
       }
 
       await wait(350);
+      if (introAborted) return;
       finishIntro();
     }
 
@@ -2071,6 +2223,12 @@
     }
 
     document.addEventListener('click', function (e) {
+      var skipBtn = e.target.closest('[data-skip-intro]');
+      if (skipBtn) {
+        e.preventDefault();
+        if (!introAborted) skipToFinal();
+        return;
+      }
       var themeBtn = e.target.closest('[data-theme-toggle]');
       if (themeBtn) {
         e.preventDefault();
